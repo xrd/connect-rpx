@@ -38,8 +38,7 @@ Use RPX with Connect:
 
 * Then, run your app, and it should redirect to you the loginPath specified in the configuration.
 
-* Need to test locally?  This will enable a random user login rather than going into RPX for authentication
-* allowing you to test while on a plane and simulate a login.
+* Need to test locally?  This will enable a random user login rather than going into RPX for authentication allowing you to test while on a plane and simulate a login.
 
     // Add this after the last RPX.config line
     // DON'T FORGET TO REMOVE THIS IN PRODUCTION!!!
