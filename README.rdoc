@@ -1,6 +1,8 @@
 = connect-rpx.js
 
-Use RPX with Connect:
+Use RPX with Connect on top of Node.js
+http://nodejs.org/
+http://github.com/extjs/Connect
 
 == Usage:
 
