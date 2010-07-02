@@ -4,7 +4,9 @@ Use RPX with Connect:
 
 == Usage:
 
-  // Setup whatever require paths you need...
+  // Setup whatever require paths you need.  You'll need to at least make restler accessible to connect-rpx
+  // require.paths.unshift('../node-lib/connect-rpx'); // This might work!
+  // require.paths.unshift('../node-lib/restler/lib'); // And, something like this!
   var Connect = require('connect');
   var MemoryStore = require('connect/lib/connect/middleware/session/memory').MemoryStore;
   var RPX = require( 'rpx' );
