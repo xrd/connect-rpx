@@ -52,4 +52,4 @@ Use RPX with Connect:
 
 == THANKS
 
-This code was based on the rack-rpx module 
+This code was based on the rack-rpx module http://github.com/pedrodelgallego/rack-rpx
