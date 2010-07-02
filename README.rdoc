@@ -17,7 +17,7 @@ http://github.com/extjs/Connect
   // 
   // Your API key, look in the settings on rpxnow.com
   RPX.config( 'apiKey', 'abcefgehijk' );
-  // (Specify root paths to ignore, if you need to serve them for your login page)
+  // (Specify root paths to ignore, paths not protected by RPX auth, or paths you need to serve for your login page, like CSS)
   RPX.config( 'ignorePaths', [ '/stylesheets', '/images', '/javascript', '/css' ] );
   // This is where RPX will redirect you to once authentication has occurred
   RPX.config( 'reentryPoint',  '/rpx_login' );
