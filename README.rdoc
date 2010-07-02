@@ -42,8 +42,8 @@ http://github.com/extjs/Connect
 
 * Then, run your app, and it should redirect to you the loginPath specified in the configuration.
 
-  // You can access the username by using req.session.username inside your app
-  var username = req.session.username;
+    // You can access the username by using req.session.username inside your app
+    var username = req.session.username;
 
 * Need to test locally?  This will enable a random user login rather than going into RPX for authentication allowing you to test while on a plane and simulate a login.
 
