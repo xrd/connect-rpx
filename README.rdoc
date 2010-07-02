@@ -38,6 +38,9 @@ Use RPX with Connect:
 
 * Then, run your app, and it should redirect to you the loginPath specified in the configuration.
 
+  // You can access the username by using req.session.username inside your app
+  var username = req.session.username;
+
 * Need to test locally?  This will enable a random user login rather than going into RPX for authentication allowing you to test while on a plane and simulate a login.
 
     // Add this after the last RPX.config line
@@ -47,6 +50,7 @@ Use RPX with Connect:
 == TODO:
 
 * Remove dependency on restler
+* Install a callback to add other data beyond just username into the session
 * Add something to better handle errors or cancellations
 * Write test cases, I'm so embarassed to publish without them....
 
