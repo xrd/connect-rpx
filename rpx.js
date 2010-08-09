@@ -1,5 +1,4 @@
 var sys = require('sys');
-// require.paths.unshift('../node-lib/restler/lib/');
 var restler = require( 'restler' );
 
 // Connect Middleware for integrating RPX Now into your application
@@ -13,8 +12,23 @@ var options = {
     host : 'localhost',
     port : '80',
     connect_session : 'connect.session',
-    name : 'default'
+    name : 'default',
+    onSuccesfulLogin :  function( json, req, res, next ) {
+        sys.puts( "In default login" );
+        req.sessionStore.regenerate(req, function(err){
+            req.session.username = json.profile.displayName;
+        });
+        redirect( res, '/' );
+    }
+
 };
+
+function redirect(res,location) {
+    res.writeHead( 302, {
+        'Location': location
+    });
+    res.end();
+}
 
 function isAuthenticated(req) {
     return req && req.session && req.session.username;
@@ -40,13 +54,10 @@ function onError(response) {
 function onCredentialsReceived(data, req, res, next) {
     json = JSON.parse( data );
     if( 'ok' == json.stat ) {
-        req.sessionStore.regenerate(req, function(err){
-            req.session.username = json.profile.displayName;
-        });
-        res.redirect( '/' );
+        options.onSuccessfulLogin( json, req, res, next );
     }
     else {
-        res.redirect( options.loginPage );
+        redirect( res, options.loginPage );
     }
 }
 
@@ -57,15 +68,16 @@ function shouldFakeIt() {
     return options.fakedAuthentication;
 }
 
-function fakeIt(req,res) {
-    req.sessionStore.regenerate(req, function(err){
-        req.session.username = ( req.body && req.body.fake_name ) ? req.body.fake_name : 'fakedUsername' + parseInt( Math.random() * 1000 );
-        res.redirect( '/' );
-    });
+function fakeIt(req,res,next) {
+    sys.puts( "Hey, we are here!" );
+    var json = { 'profile' : { 'displayName' :  ('fakedUsername' + parseInt( Math.random() * 1000 ) ) } }
+    options.wtf( json, req, res );
+    next();
 }
 
 exports.config = function( key, value ) {
     if( value ) {
+        // sys.puts( "Setting: " + key );
         options[key] = value;
     }
     return options[key];
@@ -86,7 +98,7 @@ exports.handler = function(req,res,next) {
     else if( req.url == options.logoutPoint ) {
         req.sessionStore.regenerate(req, function(err){
             req.session.username = undefined;
-            res.redirect( options.loginPage );
+            redirect( res, options.loginPage );
         });
     }
     else {
@@ -94,18 +106,25 @@ exports.handler = function(req,res,next) {
             next();        
         }
         else if( shouldFakeIt() ) {
-            fakeIt(req,res);
+            fakeIt(req,res,next);
         }
         else  {
+            ignored = false;
             ignore = options.ignorePaths;
             for( x in ignore ) { 
-                if( req.url.substr( 0, ignore[x].length ) == ignore[x] ) {
+                var first = req.url.substr( 0, ignore[x].length );
+                var second = ignore[x];
+                // sys.puts( "Ignoring: " + ignore[x] + " vs. " + req.url + " vs. " + first );
+                if( first == second ) { // req.url.substr( 0, ignore[x].length ) == ignore[x] ) {
+                    ignored = true;
                     next();
                 }
             }
             
-            // If we got here, then send to login page
-            res.redirect( options.loginPage );
+            if( !ignored ) {
+                // If we got here, then send to login page
+                redirect( res, options.loginPage );
+            }
         }
     }
 }
