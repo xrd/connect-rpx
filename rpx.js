@@ -71,7 +71,7 @@ function shouldFakeIt() {
 function fakeIt(req,res,next) {
     sys.puts( "Hey, we are here!" );
     var json = { 'profile' : { 'displayName' :  ('fakedUsername' + parseInt( Math.random() * 1000 ) ) } }
-    options.wtf( json, req, res );
+    options.wtf( json, req, res, next );
     next();
 }
 
@@ -88,44 +88,50 @@ exports.test_rpx = function( token, apiKey ) {
     post_with_credentials( token );
 }
 
-exports.handler = function(req,res,next) {
-    if( req.url == options.reentryPoint ) {
-        getCredentials(req,res,next);
-    }
-    else if( req.url == options.loginPage ) {
-        next();
-    }
-    else if( req.url == options.logoutPoint ) {
-        req.sessionStore.regenerate(req, function(err){
-            req.session.username = undefined;
-            redirect( res, options.loginPage );
-        });
-    }
-    else {
-        if( isAuthenticated(req) ) {
-            next();        
+exports.handler = function() {
+    return function(req,res,next) {
+        sys.puts( "Inside RPX" );
+        if( req.url == options.reentryPoint ) {
+            getCredentials(req,res,next);
         }
-        else if( shouldFakeIt() ) {
-            fakeIt(req,res,next);
+        else if( req.url == options.loginPage ) {
+            next();
         }
-        else  {
-            ignored = false;
-            ignore = options.ignorePaths;
-            for( x in ignore ) { 
-                var first = req.url.substr( 0, ignore[x].length );
-                var second = ignore[x];
-                // sys.puts( "Ignoring: " + ignore[x] + " vs. " + req.url + " vs. " + first );
-                if( first == second ) { // req.url.substr( 0, ignore[x].length ) == ignore[x] ) {
-                    ignored = true;
-                    next();
+        else if( req.url == options.logoutPoint ) {
+            req.sessionStore.regenerate(req, function(err){
+                req.session.username = undefined;
+                redirect( res, options.loginPage );
+            });
+        }
+        else {
+            if( isAuthenticated(req) ) {
+                next();        
+            }
+            else if( shouldFakeIt() ) {
+                fakeIt(req,res,next);
+            }
+            else  {
+                ignored = false;
+                ignore = options.ignorePaths;
+                for( x in ignore ) { 
+                    var first = req.url.substr( 0, ignore[x].length );
+                    var second = ignore[x];
+                    // sys.puts( "Ignoring: " + ignore[x] + " vs. " + req.url + " vs. " + first );
+                    if( first == second ) { // req.url.substr( 0, ignore[x].length ) == ignore[x] ) {
+                        ignored = true;
+                        next();
+                    }
+                }
+                
+                if( !ignored ) {
+                    // If we got here, then send to login page
+                    redirect( res, options.loginPage );
                 }
             }
-            
-            if( !ignored ) {
-                // If we got here, then send to login page
-                redirect( res, options.loginPage );
-            }
         }
-    }
+        // sys.puts( "Nothing happened, we got here" );
+        //next();
+        //req.end();
+    };
 }
     
