@@ -1,0 +1,5 @@
+{ "name" : "connect-rpx",       
+  "version" : "0.0.1",      
+  "engines" : "v0.2.0",
+  "author" : "Chris Dawson <xrdawson@gmail.com>",
+  "main" : "./lib/connect-rpx" }
