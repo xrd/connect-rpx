@@ -1,0 +1,22 @@
+<html>
+<body>
+  <a class='rpxnow'>
+    <h2>Click here to login</h2>
+  </a>
+  
+  <div class='rpxlogin' style='display: none;'>
+    <script>var base = '/rpx_login';</script>
+    <script src='https://rpxnow.com/openid/v2/widget' type='text/javascript'></script>
+    <script type='text/javascript'>
+      //<![CDATA[
+              RPXNOW.token_url = "http://localhost:3030" + base; 
+              // Change this.
+              RPXNOW.realm = "myRpxRealm";
+              RPXNOW.overlay = true;
+              RPXNOW.language_preference = 'en';
+            //]]>
+    </script>
+  </div>
+  
+</body>
+</html>

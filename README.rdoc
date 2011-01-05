@@ -16,39 +16,50 @@ http://github.com/extjs/Connect
 
 == Usage:
 
-  // Setup whatever require paths you need.  You'll need to at least make restler accessible to connect-rpx
-  // require.paths.unshift('../node-lib/connect-rpx'); // This might work!
-  // require.paths.unshift('../node-lib/restler/lib'); // And, something like this!
   var Connect = require('connect');
-  var MemoryStore = require('connect/lib/connect/middleware/session/memory').MemoryStore;
-  var RPX = require( 'rpx' );
-  
-  // Setup RPX 
-  // 
+  var MemoryStore = require('connect/middleware/session/memory');
+  var RPX = require( 'connect-rpx' );
+
+  // Setup RPX
   // Your API key, look in the settings on rpxnow.com
-  RPX.config( 'apiKey', 'abcefgehijk' );
-  // (Specify root paths to ignore, paths not protected by RPX auth, or paths you need to serve for your login page, like CSS)
-  RPX.config( 'ignorePaths', [ '/stylesheets', '/images', '/javascript', '/css' ] );
-  // This is where RPX will redirect you to once authentication has occurred
+  RPX.config( 'apiKey', 'asdasdadadadadasdasdasd' );
+  RPX.config( 'ignorePaths', [ '/stylesheets', '/images', '/javascript', '/css', "/login" ] );
   RPX.config( 'reentryPoint',  '/rpx_login' );
-  // This will remove the user auth session cookie, effectively logging you out.
   RPX.config( 'logoutPoint',  '/logout' );
-  // The page which you use as a login page, see the sample login.html here.
-  RPX.config( 'loginPage',  '/static/login.html' );
-  
-  // Setup your connect.  RPX requires session, cookieDecoder, redirect installed before RPX.
+  RPX.config( 'loginPage',  '/login/index.html' );
+  RPX.config( 'onSuccessfulLogin', handleLogin );
+
+  // Or, just load from JSON
+  RPX.load
+
+  function redirect(res,location) {
+    res.writeHead( 302, {
+	'Location': location
+    });
+    res.end();
+  }
+
+  function handleLogin( json, req, res, next ) {
+    req.sessionStore.regenerate(req, function(err){
+	req.session.profile = json.profile;
+	req.session.username = json.profile.displayName;
+	// next();                                                                                                                                            
+    });
+    redirect( res, '/' );
+  }
+
+  // Setup your connect.  RPX requires session, cookieDecoder, redirect installed before RPX.                                                                   
   var minute = 60000;
   var root = __dirname + "/public";
   var Server = module.exports = Connect.createServer(
-      Connect.logger(),
-      Connect.bodyDecoder(),
-      Connect.redirect(),
-      Connect.cookieDecoder(),
-      Connect.session({ store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
-      RPX.handler,
-      Connect.staticProvider( root )  // this is not strictly required, 
-                                      // but might be where you store login page and CSS, etc.
-  );
+    Connect.logger(),
+    Connect.bodyDecoder(),
+    Connect.cookieDecoder(),
+    Connect.session({ store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
+    RPX.handler(),
+    Connect.staticProvider( root )  // this is not strictly required,                                                                                          );
+
+  Server.listen(3030);
 
 * Then, run your app, and it should redirect to you the loginPath specified in the configuration.
 
