@@ -1,7 +1,6 @@
 var Connect = require('connect');
 var MemoryStore = require('connect/middleware/session/memory');
-var RPX = require( '../../connect-rpx/lib/connect-rpx');
-// var RPX = require( 'connect-rpx' );
+var RPX = require( 'connect-rpx' );
 
 // Setup RPX
 //
