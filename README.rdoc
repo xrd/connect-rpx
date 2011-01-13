@@ -43,7 +43,6 @@ http://github.com/extjs/Connect
   var root = __dirname + "/public";
   var Server = module.exports = Connect.createServer(
     Connect.logger(),
-    Connect.bodyDecoder(),
     Connect.cookieDecoder(),
     Connect.session({ store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
     RPX.handler(),

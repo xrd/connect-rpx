@@ -37,7 +37,8 @@ var minute = 60000;
 var root = __dirname + "/public";
 var Server = module.exports = Connect.createServer(
     Connect.logger(),
-    Connect.bodyDecoder(),
+    // Body decoder used to be required, but is no longer.  If you want to use it, you can install it here, or leave it out
+    // Connect.bodyDecoder(),
     Connect.cookieDecoder(),
     Connect.session({ store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
     RPX.handler(),

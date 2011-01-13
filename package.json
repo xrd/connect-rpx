@@ -1,4 +1,4 @@
 { "name" : "connect-rpx",       
-  "version" : "0.1.3",      
+  "version" : "0.1.4",      
   "author" : "Chris Dawson <xrdawson@gmail.com>",
   "main" : "./lib/connect-rpx" }
