@@ -1,5 +1,5 @@
 var Connect = require('connect');
-var MemoryStore = require('connect/middleware/session/memory');
+var MemoryStore = require('connect').session.MemoryStore;
 var RPX = require( 'connect-rpx' );
 
 // Setup RPX
@@ -40,7 +40,7 @@ var Server = module.exports = Connect.createServer(
     // Body decoder used to be required, but is no longer.  If you want to use it, you can install it here, or leave it out
     // Connect.bodyDecoder(),
     Connect.cookieDecoder(),
-    Connect.session({ store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
+    Connect.session({ secret: 'your_secrets_safe_with_me', store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
     RPX.handler(),
     Connect.staticProvider( root )  // this is not strictly required,
 );

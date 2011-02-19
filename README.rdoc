@@ -7,7 +7,7 @@ http://github.com/extjs/Connect
 == Usage:
 
   var Connect = require('connect');
-  var MemoryStore = require('connect/middleware/session/memory');
+  var MemoryStore = require('connect').session.MemoryStore;
   var RPX = require( 'connect-rpx' );
 
   // Setup RPX
@@ -44,7 +44,7 @@ http://github.com/extjs/Connect
   var Server = module.exports = Connect.createServer(
     Connect.logger(),
     Connect.cookieDecoder(),
-    Connect.session({ store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
+    Connect.session({ secret: 'your_secrets_safe_with_me', store: new MemoryStore({ reapInterval: minute, maxAge: minute * 5 }) }),
     RPX.handler(),
     Connect.staticProvider( root )  // this is not strictly required,                                                                                          );
 
